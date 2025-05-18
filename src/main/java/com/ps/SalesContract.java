@@ -1,33 +1,46 @@
 package com.ps;
 
 public class SalesContract extends Contract {
+    private boolean finance;
 
-    if (contract instanceOf SalesContract){
-        SalesContract sales = (SalesContract) contract;
-
-        contractLine = String.format("SALE|%s|%s|%s|%d|%d|%s|%s|%s|%s|%d|%.2f|%.2f|%.2f|%.2f|%.2f|%s|%.2f\\n\"," +
-                date,
-                name,
-                email,
-                vehicle.getVin(),
-                vehicle.getYear(),
-                vehicle.getMake(),
-                vehicle.getModel(),
-                vehicle.getVehicleType(),
-                vehicle.getColor(),
-                vehicle.getOdometer(),
-                vehicle.getPrice(),
-                sales.getTotalPrice(),
-                sales.getTaxAmount(),
-                sales.getRecordingFee(),
-                sales.getRecordingFee(),
-                sales.getProcessingFee(),
-                sales.getMonthlyPayment(),
-                sales.getFiancingOption(),
-                sales.getMonthlyPayment()
-                );
+    public SalesContract(String date, String name, String email, Vehicle vehicleSold, boolean finance){
+        super(date, name, email, vehicle);
+        this.finance = finance;
     }
-//
-//    public double getPrice();
-//    public double getMonthlyPayment();
+
+    public boolean isFinanced() {
+        return finance;
+    }
+
+    @Override
+    public double getTotalPrice() {
+        return getVehicle().getPrice() + getSalesTax() + getRecordingFee() + getProcessingFee();
+    }
+
+    @Override
+    public double getMonthlyPayment() {
+        if (!finance) return 0.0;
+
+        double interestRate = 0.0425;
+        int months = 24;
+
+        if (vehicle.getPrice() > 10000) {
+            interestRate = 0.0525;
+            months = 48;
+        }
+
+        double principal = getTotalPrice();
+        double monthlyInterest = interestRate / 12;
+        return (principal * monthlyInterest) / (1 - Math.pow(1 + monthlyInterest, -months));
+    }
+
+    @Override
+    public double getPrice() {
+        return 0;
+    }
+
+    @Override
+    public double getMonthlyPaymentAbstract() {
+        return 0;
+    }
 }
