@@ -1,10 +1,10 @@
 package com.ps;
 
 abstract class Contract {
-    protected String date;
-    protected String name;
-    protected String email;
-    protected Vehicle vehicle;
+    private String date;
+    private String name;
+    private String email;
+    private Vehicle vehicle;
 
     public Contract(String date, String name, String email, Vehicle vehicle) {
         this.date = date;
@@ -28,7 +28,7 @@ abstract class Contract {
         return email;
     }
 
-    public String getVehicle() {
+    public Vehicle getVehicle() {
         return vehicle;
     }
 

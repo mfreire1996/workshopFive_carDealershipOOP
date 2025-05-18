@@ -7,12 +7,12 @@ public class LeaseContract extends Contract {
     }
 
     public double getLeaseFee() {
-        return vehicle.getPrice() * 0.07; // 7% lease fee
+        return getVehicle().getPrice() * 0.07;
     }
 
     @Override
     public double getTotalPrice() {
-        return vehicle.getPrice() + getLeaseFee();
+        return getVehicle().getPrice() + getLeaseFee();
     }
 
     @Override
@@ -20,17 +20,17 @@ public class LeaseContract extends Contract {
         int leaseTermMonths = 36;
         double interestRate = 0.04 / 12;
 
-        double principal = vehicle.getPrice();
+        double principal = getVehicle().getPrice();
         return (principal * interestRate) / (1 - Math.pow(1 + interestRate, -leaseTermMonths));
     }
 
     @Override
     public double getPrice() {
-        return 0;
+        return getTotalPrice();
     }
 
     @Override
     public double getMonthlyPaymentAbstract() {
-        return 0;
+        return getMonthlyPayment();
     }
 }

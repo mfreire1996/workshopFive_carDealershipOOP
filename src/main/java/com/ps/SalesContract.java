@@ -4,7 +4,7 @@ public class SalesContract extends Contract {
     private boolean finance;
 
     public SalesContract(String date, String name, String email, Vehicle vehicleSold, boolean finance){
-        super(date, name, email, vehicle);
+        super(date, name, email, vehicleSold);
         this.finance = finance;
     }
 
@@ -24,7 +24,7 @@ public class SalesContract extends Contract {
         double interestRate = 0.0425;
         int months = 24;
 
-        if (vehicle.getPrice() > 10000) {
+        if (getVehicle().getPrice() > 10000) {
             interestRate = 0.0525;
             months = 48;
         }
@@ -36,11 +36,28 @@ public class SalesContract extends Contract {
 
     @Override
     public double getPrice() {
-        return 0;
+        return getTotalPrice();
     }
 
     @Override
     public double getMonthlyPaymentAbstract() {
-        return 0;
+        return getMonthlyPayment();
     }
+
+    public double getSalesTax() {
+        return getVehicle().getPrice() * 0.05;
+    }
+
+    public double getRecordingFee() {
+        return 100.00;
+    }
+
+    public double getProcessingFee() {
+        return  295.00;
+    }
+
+    public boolean getFinancingOption(){
+        return finance;
+    }
+
 }
