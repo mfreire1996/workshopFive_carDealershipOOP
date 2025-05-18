@@ -32,6 +32,7 @@ public class UserInterface {
             System.out.println("7. Get all");
             System.out.println("8. Add vehicle");
             System.out.println("9. Remove vehicle");
+            System.out.println("10. SELL/LEASE a vehicle");
             System.out.println("0. Exit");
 
             System.out.print("Command: ");
@@ -65,6 +66,8 @@ public class UserInterface {
                 case 9:
                     processRemoveVehicleRequest();
                     break;
+                case 10:
+                    processSellOrLeaseVehicle();
                 case 0:
                     System.out.println("Exiting...");
                     break;
@@ -218,6 +221,37 @@ public class UserInterface {
         } else {
             System.out.println("Vehicle with VIN: " + vin + " not found!");
         }
+    }
+
+    private void processSellOrLeaseVehicle() {
+        System.out.println("----SELL OR LEASE A VEHICLE----");
+        scanner.nextLine();
+
+        System.out.println("Would you like to sell or lease a vehicle? ");
+        System.out.println("1. Sell Vehicle");
+        System.out.println("2. Lease Vehicle");
+
+        System.out.print("Command: ");
+
+        int sellOrLeaseMenu = scanner.nextInt();
+
+        switch (sellOrLeaseMenu) {
+            case 1:
+                sellVehicle();
+                break;
+            case 2:
+                leaseVehicle();
+                break;
+            default:
+                System.out.println("Invalid option. Please enter 1 or 2.");
+                break;
+        }
+    }
+
+    private void sellVehicle() {
+    }
+
+    private void leaseVehicle() {
     }
 
     public static void displayVehicles(ArrayList<Vehicle> vehicles) {
