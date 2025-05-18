@@ -38,4 +38,5 @@ abstract class Contract {
     public String getContractType(){
         return this instanceof SalesContract ? "SALE" : "LEASE";
     }
+
 }

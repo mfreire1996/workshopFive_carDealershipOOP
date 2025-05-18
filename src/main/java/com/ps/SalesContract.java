@@ -27,6 +27,9 @@ public class SalesContract extends Contract {
         if (getVehicle().getPrice() > 10000) {
             interestRate = 0.0525;
             months = 48;
+        } else {
+            interestRate = 0.0525;
+            months = 24;
         }
 
         double principal = getTotalPrice();
@@ -53,11 +56,12 @@ public class SalesContract extends Contract {
     }
 
     public double getProcessingFee() {
-        return  295.00;
+        return getVehicle().getPrice() < 10000 ? 295.00 : 495.00;
     }
 
     public boolean getFinancingOption(){
         return finance;
     }
+
 
 }

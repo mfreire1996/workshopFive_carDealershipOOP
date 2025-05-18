@@ -68,6 +68,7 @@ public class UserInterface {
                     break;
                 case 10:
                     processSellOrLeaseVehicle();
+                    break;
                 case 0:
                     System.out.println("Exiting...");
                     break;
@@ -78,7 +79,6 @@ public class UserInterface {
     }
 
     private void processGetByPriceRequest() {
-        // TODO: Ask the user for a starting price and ending price
         System.out.println("--------Display vehicles by price--------");
         System.out.print("Min: ");
         double min = scanner.nextDouble();
@@ -87,10 +87,8 @@ public class UserInterface {
         double max = scanner.nextDouble();
 
 
-        // ArrayList<Vehicle> filteredVehicles = dealership.getVehiclesByPrice(min, max);
         ArrayList<Vehicle> filteredVehicles = dealership.vehiclesByPrice(min, max);
 
-        // Display vehicles with for loop
         displayVehicles(filteredVehicles);
     }
 
@@ -119,7 +117,6 @@ public class UserInterface {
 
         ArrayList<Vehicle> filteredVehicles = dealership.vehiclesByYear(min, max);
 
-        // Display vehicles with for loop
         displayVehicles(filteredVehicles);
     }
 
@@ -249,9 +246,101 @@ public class UserInterface {
     }
 
     private void sellVehicle() {
+        scanner.nextLine();
+
+        System.out.print("Enter VIN of the vehicle to sell: ");
+        int vin = scanner.nextInt();
+        Vehicle vehicle = dealership.getVehicleByVin(vin);
+
+        if (vehicle == null) {
+            System.out.println("Vehicle not found.");
+            return;
+        }
+
+        scanner.nextLine();
+
+        System.out.print("Enter buyer's name: ");
+        String name = scanner.nextLine();
+
+        System.out.print("Enter buyer's email: ");
+        String email = scanner.nextLine();
+
+        System.out.print("Is the vehicle being financed (yes/no): ");
+        String financedInput = scanner.nextLine().trim().toLowerCase();
+
+        boolean isFinanced = false;
+        if (financedInput.equals("yes")) {
+            isFinanced = true;
+        } else if (!financedInput.equals("no")) {
+            System.out.println("Invalid input. Assuming no financing.");
+            isFinanced = false;
+        }
+
+        String date = java.time.LocalDate.now().toString();
+        SalesContract contract = new SalesContract(date, name, email, vehicle, isFinanced);
+
+        new ContractFileManager().saveContract(contract);
+        dealership.removeVehicleByVin(vin);
+        DealershipFileManager.saveDealership(dealership);
+
+        System.out.println("Vehicle sold and contract saved.");
+        System.out.println("-------- Sales Contract Summary --------");
+        System.out.printf("Buyer: %s%n", contract.getName());
+        System.out.printf("Email: %s%n", contract.getEmail());
+        System.out.printf("Vehicle: %d %s %s (%s) - $%.2f%n",
+                vehicle.getYear(), vehicle.getMake(), vehicle.getModel(),
+                vehicle.getColor(), vehicle.getPrice());
+        System.out.printf("Sales Tax: $%.2f%n", contract.getSalesTax());
+        System.out.printf("Recording Fee: $%.2f%n", contract.getRecordingFee());
+        System.out.printf("Processing Fee: $%.2f%n", contract.getProcessingFee());
+        System.out.printf("Total Price: $%.2f%n", contract.getTotalPrice());
+        System.out.printf("Monthly Payment: $%.2f%n", contract.getMonthlyPayment());
+        System.out.println("Financing: " + (contract.getFinancingOption() ? "YES " : "NO "));
     }
 
+
+
     private void leaseVehicle() {
+        System.out.print("Enter VIN of the vehicle to lease: ");
+        int vin = scanner.nextInt();
+        scanner.nextLine();
+
+        Vehicle vehicle = dealership.getVehicleByVin(vin);
+        if (vehicle == null) {
+            System.out.println("Vehicle not found.");
+            return;
+        }
+
+        int currentYear = java.time.LocalDate.now().getYear();
+        if (vehicle.getYear() < currentYear - 3) {
+            System.out.println("Cannot lease a vehicle older than 3 years.");
+            return;
+        }
+
+        System.out.print("Customer name: ");
+        String name = scanner.nextLine();
+
+        System.out.print("Customer email: ");
+        String email = scanner.nextLine();
+
+        String date = java.time.LocalDate.now().toString();
+        LeaseContract contract = new LeaseContract(date, name, email, vehicle);
+
+        new ContractFileManager().saveContract(contract);
+        dealership.removeVehicleByVin(vin);
+        DealershipFileManager.saveDealership(dealership);
+
+        System.out.println("Vehicle leased and contract saved.");
+        System.out.println("-------- Lease Contract Summary --------");
+        System.out.printf("Customer: %s%n", contract.getName());
+        System.out.printf("Email: %s%n", contract.getEmail());
+        System.out.printf("Vehicle: %d %s %s (%s) - $%.2f%n",
+                vehicle.getYear(), vehicle.getMake(), vehicle.getModel(),
+                vehicle.getColor(), vehicle.getPrice());
+        System.out.printf("Lease Fee: $%.2f%n", contract.getLeaseFee());
+        System.out.printf("Expected Ending Value: $%.2f%n", vehicle.getPrice() * 0.5);
+        System.out.printf("Total Price: $%.2f%n", contract.getTotalPrice());
+        System.out.printf("Monthly Payment: $%.2f%n", contract.getMonthlyPayment());
     }
 
     public static void displayVehicles(ArrayList<Vehicle> vehicles) {

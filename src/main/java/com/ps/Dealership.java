@@ -125,7 +125,13 @@ public class Dealership {
         this.phone = phone;
     }
 
-//    public ArrayList<Vehicle> getOdometer() {
-//        this.odometer = odometer;
-//    }
+    public Vehicle getVehicleByVin(int vin) {
+        for (Vehicle vehicle : inventory) {
+            if (vehicle.getVin() == vin) {
+                return vehicle;
+            }
+        }
+        return null; // Vehicle not found
+    }
+
 }
